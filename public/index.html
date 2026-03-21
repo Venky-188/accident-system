@@ -105,9 +105,9 @@ async function loadData() {
         }
     });
 
-    // 🔥 HANDLE ERROR PROPERLY
+    // 🔥 ADD THIS BLOCK HERE
     if (!res.ok) {
-        console.log("Session expired");
+        alert("Session expired, please login again");
         localStorage.clear();
         window.location.href = "/login.html";
         return;
