@@ -10,6 +10,8 @@
 
     <h1>🚑 Accident Reporting</h1>
 
+    <button onclick="logout()">Logout</button>
+
     <div class="card">
 
         <h2>Report Accident</h2>
@@ -17,17 +19,13 @@
         <form id="form">
 
             <input type="text" id="type" placeholder="Accident Type" required>
-            <input type="text" id="severity" placeholder="Severity (Low/Medium/High)" required>
+            <input type="text" id="severity" placeholder="Severity" required>
 
-            <button type="button" onclick="getLocation()" class="location-btn">
-                📍 Get Location
-            </button>
+            <button type="button" onclick="getLocation()">📍 Get Location</button>
 
             <p id="locationText"></p>
 
-            <iframe id="map"></iframe>
-
-            <button type="submit" class="report-btn">🚨 Report Accident</button>
+            <button type="submit">🚨 Report</button>
 
         </form>
 
@@ -42,9 +40,11 @@
 
 <script>
 
+// 🔹 VARIABLES
 let lat = null;
 let lon = null;
 
+// 🔹 LOCATION FUNCTION
 function getLocation() {
     navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -60,14 +60,17 @@ function getLocation() {
     );
 }
 
+// 🔹 LOGOUT
 function logout() {
     localStorage.clear();
     window.location.href = "/login.html";
 }
 
+// 🔹 FORM + LIST
 const form = document.getElementById("form");
 const list = document.getElementById("list");
 
+// 🔹 SUBMIT
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -93,6 +96,7 @@ form.addEventListener("submit", async (e) => {
     loadData();
 });
 
+// 🔹 LOAD DATA
 async function loadData() {
     const token = localStorage.getItem("token");
 
@@ -113,6 +117,7 @@ async function loadData() {
     });
 }
 
+// 🔹 AUTO LOAD
 loadData();
 setInterval(loadData, 3000);
 
@@ -120,4 +125,3 @@ setInterval(loadData, 3000);
 
 </body>
 </html>
-<button type="button" onclick="getLocation()">📍 Get Location</button>
