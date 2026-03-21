@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Responder Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🚑 Responder Dashboard</h1>
+
+    <div class="card">
+        <h2>Incoming Accidents</h2>
+        <ul id="list"></ul>
+    </div>
+
+</div>
+
+<script>
+if (localStorage.getItem("role") !== "responder") {
+    window.location.href = "/login.html";
+}
+const list = document.getElementById("list");
+
+// 👉 Load accidents
+async function loadData() {
+    const token = localStorage.getItem("token");
+
+const res = await fetch("/accidents", {
+    headers: {
+        "Authorization": token
+    }
+});
+    const data = await res.json();
+
+    list.innerHTML = "";
+
+    data.forEach(a => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            🚗 ${a.accident_type} | ⚠ ${a.severity}
+            <br>
+            Status: ${a.status}
+            <br>
+            <button onclick="markHandled(${a.accident_id})">
+                ✅ Mark Handled
+            </button>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+// 👉 Mark as handled
+async function markHandled(id) {
+
+    const token = localStorage.getItem("token");
+
+    await fetch("/update/" + id, {
+        method: "PUT",
+        headers: {
+            "Authorization": token
+        }
+    });
+
+    loadData();
+}
+loadData();
+setInterval(loadData, 3000);
+
+</script>
+
+</body>
+</html>
+<button onclick="logout()">Logout</button>
