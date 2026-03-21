@@ -40,11 +40,9 @@
 
 <script>
 
-// 🔹 VARIABLES
 let lat = null;
 let lon = null;
 
-// 🔹 LOCATION FUNCTION
 function getLocation() {
     navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -60,17 +58,14 @@ function getLocation() {
     );
 }
 
-// 🔹 LOGOUT
 function logout() {
     localStorage.clear();
     window.location.href = "/login.html";
 }
 
-// 🔹 FORM + LIST
 const form = document.getElementById("form");
 const list = document.getElementById("list");
 
-// 🔹 SUBMIT
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -96,7 +91,6 @@ form.addEventListener("submit", async (e) => {
     loadData();
 });
 
-// 🔹 LOAD DATA
 async function loadData() {
     const token = localStorage.getItem("token");
 
@@ -117,7 +111,6 @@ async function loadData() {
     });
 }
 
-// 🔹 AUTO LOAD
 loadData();
 setInterval(loadData, 3000);
 
