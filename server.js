@@ -105,7 +105,7 @@ function verifyToken(req, res, next) {
     const token = req.headers['authorization'];
 
     if (!token) {
-        return res.send("Access denied ❌ No token");
+        return res.status(401).json({ error: "No token ❌" });
     }
 
     try {
@@ -113,7 +113,7 @@ function verifyToken(req, res, next) {
         req.user = verified;
         next();
     } catch (err) {
-        res.send("Invalid token ❌");
+        return res.status(401).json({ error: "Invalid token ❌" });
     }
 }
 // create user (temporary API)
