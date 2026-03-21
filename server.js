@@ -152,3 +152,6 @@ function verifyToken(req, res, next) {
         res.send("Invalid token ❌");
     }
 }
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'public')));

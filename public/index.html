@@ -41,24 +41,28 @@
 </div>
 
 <script>
-if (localStorage.getItem("role") !== "user") {
-    window.location.href = "/login.html";
-}
 
 let lat = null;
 let lon = null;
 
 function getLocation() {
-    navigator.geolocation.getCurrentPosition((pos) => {
-        lat = pos.coords.latitude;
-        lon = pos.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            lat = pos.coords.latitude;
+            lon = pos.coords.longitude;
 
-        document.getElementById("locationText").innerText =
-            "📍 " + lat + ", " + lon;
+            document.getElementById("locationText").innerText =
+                "📍 " + lat + ", " + lon;
+        },
+        () => {
+            alert("Location access denied ❌");
+        }
+    );
+}
 
-        document.getElementById("map").src =
-            `https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
-    });
+function logout() {
+    localStorage.clear();
+    window.location.href = "/login.html";
 }
 
 const form = document.getElementById("form");
@@ -66,6 +70,8 @@ const list = document.getElementById("list");
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem("token");
 
     const data = {
         type: document.getElementById("type").value,
@@ -75,16 +81,19 @@ form.addEventListener("submit", async (e) => {
         user_id: 1
     };
 
-await fetch("/report", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-    },
-    body: JSON.stringify(data)
-});
-async function loadData() {
+    await fetch("/report", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+        },
+        body: JSON.stringify(data)
+    });
 
+    loadData();
+});
+
+async function loadData() {
     const token = localStorage.getItem("token");
 
     const res = await fetch("/accidents", {
@@ -111,4 +120,4 @@ setInterval(loadData, 3000);
 
 </body>
 </html>
-<button onclick="logout()">Logout</button>
+<button type="button" onclick="getLocation()">📍 Get Location</button>
