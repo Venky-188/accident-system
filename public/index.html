@@ -24,6 +24,7 @@
             <button type="button" onclick="getLocation()">📍 Get Location</button>
 
             <p id="locationText"></p>
+            <iframe id="map" width="100%" height="250"></iframe>
 
             <button type="submit">🚨 Report</button>
 
@@ -51,6 +52,10 @@ function getLocation() {
 
             document.getElementById("locationText").innerText =
                 "📍 " + lat + ", " + lon;
+
+            // 🔥 SHOW MAP
+            document.getElementById("map").src =
+                `https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
         },
         () => {
             alert("Location access denied ❌");
