@@ -65,40 +65,41 @@ app.put('/update/:id', verifyToken, (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    const sql = `SELECT * FROM USERS WHERE username = ?`;
+    // 🔥 TEMP LOGIN (NO DATABASE)
+    if (username === "user2" && password === "1234") {
 
-    db.query(sql, [username], async (err, result) => {
-        if (result.length > 0) {
+        const token = jwt.sign(
+            { id: 1, role: "user" },
+            SECRET,
+            { expiresIn: '1h' }
+        );
 
-            const user = result[0];
-            const match = await bcrypt.compare(password, user.password);
+        return res.json({
+            success: true,
+            token: token,
+            role: "user"
+        });
+    }
 
-            if (match) {
+    if (username === "responder2" && password === "1234") {
 
-                // 🔥 CREATE TOKEN
-                const token = jwt.sign(
-                    { id: user.user_id, role: user.role },
-                    SECRET,
-                    { expiresIn: '1h' }
-                );
+        const token = jwt.sign(
+            { id: 2, role: "responder" },
+            SECRET,
+            { expiresIn: '1h' }
+        );
 
-                res.json({
-                    success: true,
-                    token: token,
-                    role: user.role
-                });
+        return res.json({
+            success: true,
+            token: token,
+            role: "responder"
+        });
+    }
 
-            } else {
-                res.json({ success: false });
-            }
-
-        } else {
-            res.json({ success: false });
-        }
-    });
+    res.json({ success: false });
 });
 function verifyToken(req, res, next) {
 
