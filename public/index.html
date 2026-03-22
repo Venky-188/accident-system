@@ -97,31 +97,43 @@ form.addEventListener("submit", async (e) => {
 });
 
 async function loadData() {
-    const token = localStorage.getItem("token");
+    try {
+        const token = localStorage.getItem("token");
 
-    const res = await fetch("/accidents", {
-        headers: {
-            "Authorization": token
+        const res = await fetch("/accidents", {
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        // 🔥 If backend error
+        if (!res.ok) {
+            console.log("Server error or invalid token");
+            return;
         }
-    });
 
-    // 🔥 ADD THIS BLOCK HERE
-    if (!res.ok) {
-        alert("Session expired, please login again");
-        localStorage.clear();
-        window.location.href = "/login.html";
-        return;
+        // 🔥 Read as text first (safe)
+        const text = await res.text();
+
+        // 🔥 If empty response
+        if (!text) {
+            console.log("Empty response from server");
+            return;
+        }
+
+        const data = JSON.parse(text);
+
+        list.innerHTML = "";
+
+        data.forEach(a => {
+            const li = document.createElement("li");
+            li.innerText = `🚗 ${a.accident_type} | ⚠ ${a.severity}`;
+            list.appendChild(li);
+        });
+
+    } catch (err) {
+        console.log("Error loading data:", err);
     }
-
-    const data = await res.json();
-
-    list.innerHTML = "";
-
-    data.forEach(a => {
-        const li = document.createElement("li");
-        li.innerText = `🚗 ${a.accident_type} | ⚠ ${a.severity}`;
-        list.appendChild(li);
-    });
 }
 
 loadData();
